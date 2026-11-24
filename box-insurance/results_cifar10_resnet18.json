@@ -1,0 +1,195 @@
+{
+  "dataset": "cifar10",
+  "partition": "iid",
+  "dirichlet_alpha": null,
+  "fidelity": "paper",
+  "seeds": [
+    42
+  ],
+  "description": "CIFAR-10, 3x32x32, resnet18",
+  "target_label": 0,
+  "config": {
+    "n_rounds": 100,
+    "local_epochs": 10,
+    "n_clients": 50,
+    "n_malicious": 12,
+    "attack_scale": 1.5,
+    "poison_rate": 0.5,
+    "clean_ratio": 0.1,
+    "kd_epochs": 8,
+    "kd_T": 3.0,
+    "kd_alpha": 0.5
+  },
+  "attacks": [
+    {
+      "dataset": "cifar10",
+      "attack": "semantic",
+      "kind": "semantic",
+      "trigger": "green-dominant class-1 images relabeled -> 0 (no pixels added)",
+      "param": 58.0,
+      "target": 0,
+      "asr_pre": 0.2413793103448276,
+      "asr_post": 0.034482758620689655,
+      "acc_pre": 0.648,
+      "acc_post": 0.1475,
+      "teacher_T": 0.034482758620689655,
+      "excess_post": 0.0,
+      "teacher_acc": 0.7372,
+      "ctrl_pre": 0.06157112526539278,
+      "ctrl_post": 0.03927813163481953,
+      "n_subset_test": 58
+    },
+    {
+      "dataset": "cifar10",
+      "attack": "pixel",
+      "kind": "pixel",
+      "trigger": "5x5 pixel block, bottom-right",
+      "param": 5.0,
+      "target": 0,
+      "asr_pre": 0.978,
+      "asr_post": 0.08022222222222222,
+      "acc_pre": 0.6417,
+      "acc_post": 0.1506,
+      "teacher_T": 0.028888888888888888,
+      "excess_post": 0.051333333333333335,
+      "teacher_acc": 0.7372
+    }
+  ],
+  "screen": [
+    {
+      "name": "random_14x14_center",
+      "T": 0.05598669499158859,
+      "pre": 1.0,
+      "post": 0.0,
+      "excess": -0.05598669499158859
+    },
+    {
+      "name": "random_20x20_center",
+      "T": 0.0,
+      "pre": 1.0,
+      "post": 1.0,
+      "excess": 1.0
+    },
+    {
+      "name": "white_14x14_center",
+      "T": 0.052106428891420364,
+      "pre": 1.0,
+      "post": 0.9626666666666667,
+      "excess": 0.9105602377752463
+    },
+    {
+      "name": "white_20x20_center",
+      "T": 0.04988913610577583,
+      "pre": 1.0,
+      "post": 0.00022222222222222223,
+      "excess": -0.04966691388355361
+    },
+    {
+      "name": "vertical_stripes",
+      "T": 0.0,
+      "pre": 1.0,
+      "post": 0.9992222222222222,
+      "excess": 0.9992222222222222
+    },
+    {
+      "name": "nine_dots",
+      "T": 0.12139689922332764,
+      "pre": 0.9884444444444445,
+      "post": 0.988,
+      "excess": 0.8666031007766724
+    },
+    {
+      "name": "three_corners",
+      "T": 0.043791573494672775,
+      "pre": 0.9983333333333333,
+      "post": 0.4288888888888889,
+      "excess": 0.3850973153942161
+    },
+    {
+      "name": "hollow_square",
+      "T": 0.09312638640403748,
+      "pre": 0.9986666666666667,
+      "post": 0.9807777777777777,
+      "excess": 0.8876513913737403
+    },
+    {
+      "name": "low_amp_noise",
+      "T": 0.0,
+      "pre": 1.0,
+      "post": 0.0,
+      "excess": 0.0
+    },
+    {
+      "name": "low_amp_full",
+      "T": 0.0,
+      "pre": 1.0,
+      "post": 0.0,
+      "excess": 0.0
+    },
+    {
+      "name": "random_14x14_pixel",
+      "T": 0.018292682245373726,
+      "pre": 0.9994444444444445,
+      "post": 0.6835555555555556,
+      "excess": 0.6652628733101819
+    },
+    {
+      "name": "random_20x20_pixel",
+      "T": 0.0027716185431927443,
+      "pre": 1.0,
+      "post": 1.0,
+      "excess": 0.9972283814568073
+    },
+    {
+      "name": "low_amp_norm_03",
+      "T": 0.0,
+      "pre": 1.0,
+      "post": 0.0,
+      "excess": 0.0
+    },
+    {
+      "name": "low_amp_norm_01",
+      "T": 0.0,
+      "pre": 1.0,
+      "post": 0.0,
+      "excess": 0.0
+    },
+    {
+      "name": "white_14x14",
+      "T": 0.052106428891420364,
+      "pre": 1.0,
+      "post": 0.9976666666666667,
+      "excess": 0.9455602377752463
+    },
+    {
+      "name": "three_corners",
+      "T": 0.043791573494672775,
+      "pre": 0.9962222222222222,
+      "post": 0.28933333333333333,
+      "excess": 0.24554175983866056
+    }
+  ],
+  "evasion": [
+    {
+      "name": "random_20x20_center_FL",
+      "T": 0.0,
+      "asr_pre": 1.0,
+      "asr_post": 0.5053333333333333,
+      "excess": 0.5053333333333333,
+      "acc_pre": 0.6365,
+      "acc_post": 0.1817,
+      "verdict": "REAL PATH-B WINNER"
+    },
+    {
+      "name": "vertical_stripes_FL",
+      "T": 0.0,
+      "asr_pre": 1.0,
+      "asr_post": 0.01988888888888889,
+      "excess": 0.01988888888888889,
+      "acc_pre": 0.6419,
+      "acc_post": 0.1775,
+      "verdict": "ADFL removed it"
+    }
+  ],
+  "wm_sweep": []
+}

@@ -1,0 +1,56 @@
+{
+  "dataset": "fashion_mnist",
+  "partition": "dirichlet",
+  "dirichlet_alpha": 0.5,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "attacks": [
+    {
+      "name": "watermark",
+      "T": 0.005925925925925926,
+      "n_seeds": 3,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "asr_pre_mean": 0.9947407407407408,
+      "asr_pre_std": 0.001782401394891244,
+      "asr_post_mean": 0.009518518518518518,
+      "asr_post_std": 0.009541548735052108,
+      "acc_pre_mean": 0.8930666666666666,
+      "acc_pre_std": 0.002311565126344741,
+      "acc_post_mean": 0.7247,
+      "acc_post_std": 0.0025357444666212073,
+      "excess": 0.0035925925925925925,
+      "n_diverged": 0,
+      "diverged_seeds": [],
+      "verdict": "removed"
+    },
+    {
+      "name": "random_14x14_pixel",
+      "T": 0.015185185185185185,
+      "n_seeds": 3,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "asr_pre_mean": 0.999962962962963,
+      "asr_pre_std": 6.415002990992999e-05,
+      "asr_post_mean": 0.1881851851851852,
+      "asr_post_std": 0.32556147763543003,
+      "acc_pre_mean": 0.8966,
+      "acc_pre_std": 0.0032741411087489586,
+      "acc_post_mean": 0.7085,
+      "acc_post_std": 0.06397397908524995,
+      "excess": 0.17300000000000001,
+      "n_diverged": 0,
+      "diverged_seeds": [],
+      "verdict": "survives"
+    }
+  ]
+}

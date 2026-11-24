@@ -1,0 +1,43 @@
+%=====================================================================
+% Material removed from adfl_eval (3).tex to fit the 6-page limit.
+% Nothing here is needed to compile the paper. Paste back only if the
+% PDF comes out shorter than 6 pages; the KD-loss figure and the
+% CIFAR-10 KD sweep have already been restored in the paper.
+%=====================================================================
+
+% ---------------------------------------------------------------------
+% 1) Motivation diagram (was Fig. 1, ~2.8 in with caption)
+%    Restore: insert before the contributions paragraph, and append
+%    "Fig.~\ref{fig:motivation} summarizes this motivation." to the
+%    second Introduction paragraph.
+% ---------------------------------------------------------------------
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\scriptsize, >=Stealth,
+  box/.style={draw, rounded corners=1pt, align=center, inner sep=2pt, minimum height=0.8cm},
+  arr/.style={->, thick}]
+\node[box, text width=0.8cm] (d) at (0,0) {Clean\\data $D$};
+\node[box, text width=2.2cm, fill=gray!12] (a1) at (1.95,0.85) {Conventional triggers $D'$\\(pixel, watermark, \dots)};
+\node[box, text width=2.2cm, fill=gray!12, densely dashed] (a2) at (1.95,-0.85) {Trigger optimized against ADFL's distillation data $D''$};
+\node[box, text width=1.35cm, minimum height=2.1cm, fill=gray!30] (adfl) at (4.4,0) {\textbf{ADFL}\\defense\\[2pt]GAN,\\teacher,\\KD};
+\node[box, text width=2.4cm] (o1) at (6.95,0.85) {Backdoor removed\\(ASR $-95\%$, ACC $>90\%$ reported \cite{zhu2023adfl})};
+\node[box, text width=2.4cm, densely dashed] (o2) at (6.95,-0.85) {Backdoor survives?\\(not established)};
+\draw[arr] (d.north) |- (a1.west);
+\draw[arr] (d.south) |- (a2.west);
+\draw[arr] (a1.east) -- (adfl.west |- a1.east);
+\draw[arr] (a2.east) -- (adfl.west |- a2.east);
+\draw[arr] (adfl.east |- o1.west) -- (o1.west);
+\draw[arr] (adfl.east |- o2.west) -- (o2.west);
+
+\end{tikzpicture}
+\caption{Motivation. ADFL is reported to purify models backdoored with conventional triggers. Open questions: does the reported behavior reproduce independently, and does a trigger optimized against ADFL's own distillation data evade it (Sec.~\ref{sec:adaptive})?}
+\label{fig:motivation}
+\end{figure}
+
+% ---------------------------------------------------------------------
+% 2) Two rows dropped from Table I (Seeds, Dirichlet alpha). Restore by
+%    reinserting into tab:hp and putting " $^{\dagger}$Base attacks only,
+%    follow-up run" back into its caption.
+% ---------------------------------------------------------------------
+% Seeds & 42, 43, 44 & 42; 42--44$^{\dagger}$ \\
+% Dirichlet $\alpha$ (Non-IID) & 0.5 & -- \\

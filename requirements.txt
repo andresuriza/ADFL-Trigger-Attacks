@@ -1,0 +1,16 @@
+torch
+torchvision
+scikit-learn
+seaborn
+pandas
+tqdm
+matplotlib
+
+# Optional: parallel launcher for the extra experiments
+papermill
+
+# Required to execute the notebook via the launcher fallback path,
+# or to run it interactively:
+jupyter
+nbconvert
+ipykernel

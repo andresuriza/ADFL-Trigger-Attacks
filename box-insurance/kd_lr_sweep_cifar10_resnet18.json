@@ -1,0 +1,35 @@
+{
+  "dataset": "cifar10",
+  "model": "resnet18",
+  "attack": "pixel",
+  "kd_epochs": 12,
+  "acc_pre": 0.6417,
+  "asr_pre": 0.978,
+  "sweep": [
+    {
+      "kd_lr": 0.0005,
+      "acc_post": 0.1412,
+      "asr_post": 0.026222222222222223
+    },
+    {
+      "kd_lr": 0.001,
+      "acc_post": 0.1344,
+      "asr_post": 0.009666666666666667
+    },
+    {
+      "kd_lr": 0.002,
+      "acc_post": 0.1374,
+      "asr_post": 0.018444444444444444
+    },
+    {
+      "kd_lr": 0.004,
+      "acc_post": 0.1432,
+      "asr_post": 0.02677777777777778
+    },
+    {
+      "kd_lr": 0.008,
+      "acc_post": 0.1466,
+      "asr_post": 0.025333333333333333
+    }
+  ]
+}

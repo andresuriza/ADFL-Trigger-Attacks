@@ -1,0 +1,91 @@
+{
+  "dataset": "cifar10",
+  "partition": "iid",
+  "dirichlet_alpha": null,
+  "fidelity": "paper",
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "description": "CIFAR-10, 3x32x32, resnet18",
+  "target_label": 0,
+  "config": {
+    "n_rounds": 100,
+    "local_epochs": 10,
+    "n_clients": 50,
+    "n_malicious": 12,
+    "attack_scale": 1.5,
+    "poison_rate": 0.5,
+    "clean_ratio": 0.1,
+    "kd_epochs": 8,
+    "kd_T": 3.0,
+    "kd_alpha": 0.5
+  },
+  "attacks": [
+    {
+      "dataset": "cifar10",
+      "attack": "semantic",
+      "kind": "semantic",
+      "trigger": "green-dominant class-1 images relabeled -> 0 (no pixels added)",
+      "param": 58.0,
+      "target": 0,
+      "asr_pre": 0.2413793103448276,
+      "asr_post": 0.034482758620689655,
+      "acc_pre": 0.648,
+      "acc_post": 0.168,
+      "teacher_T": 0.034482758620689655,
+      "excess_post": 0.0,
+      "teacher_acc": 0.7372,
+      "ctrl_pre": 0.06157112526539278,
+      "ctrl_post": 0.06581740976645435,
+      "n_subset_test": 58,
+      "n_seeds": 3,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "asr_pre_mean": 0.3160919540229885,
+      "asr_pre_std": 0.06968020490219619,
+      "asr_post_mean": 0.20689655172413793,
+      "asr_post_std": 0.16447227610636994,
+      "acc_pre_mean": 0.6586333333333334,
+      "acc_pre_std": 0.009355390602926898,
+      "acc_post_mean": 0.22946666666666668,
+      "acc_post_std": 0.09002429301768124
+    },
+    {
+      "dataset": "cifar10",
+      "attack": "pixel",
+      "kind": "pixel",
+      "trigger": "5x5 pixel block, bottom-right",
+      "param": 5.0,
+      "target": 0,
+      "asr_pre": 0.978,
+      "asr_post": 0.14644444444444443,
+      "acc_pre": 0.6417,
+      "acc_post": 0.1452,
+      "teacher_T": 0.028888888888888888,
+      "excess_post": 0.11755555555555555,
+      "teacher_acc": 0.7372,
+      "n_seeds": 3,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "asr_pre_mean": 0.9781481481481481,
+      "asr_pre_std": 0.0007882887649552771,
+      "asr_post_mean": 0.4804074074074074,
+      "asr_post_std": 0.3426997810295412,
+      "acc_pre_mean": 0.6449666666666667,
+      "acc_pre_std": 0.0030005555041246984,
+      "acc_post_mean": 0.22486666666666666,
+      "acc_post_std": 0.10080839912097272
+    }
+  ],
+  "screen": [],
+  "evasion": [],
+  "wm_sweep": []
+}

@@ -1,0 +1,59 @@
+{
+  "dataset": "mnist",
+  "partition": "dirichlet",
+  "dirichlet_alpha": 0.5,
+  "fidelity": "paper",
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "description": "MNIST, 28x28x1, small CNN (paper Table 1)",
+  "target_label": 1,
+  "config": {
+    "n_rounds": 200,
+    "local_epochs": 20,
+    "n_clients": 100,
+    "n_malicious": 25,
+    "attack_scale": 1.5,
+    "poison_rate": 0.5,
+    "clean_ratio": 0.03,
+    "kd_epochs": 20,
+    "kd_T": 3.0,
+    "kd_alpha": 0.5
+  },
+  "attacks": [
+    {
+      "dataset": "mnist",
+      "attack": "pixel",
+      "kind": "pixel",
+      "trigger": "5x5 pixel block, bottom-right",
+      "param": 5.0,
+      "target": 1,
+      "asr_pre": 0.9996615905245347,
+      "asr_post": 0.0056401579244218835,
+      "acc_pre": 0.9872,
+      "acc_post": 0.9504,
+      "teacher_T": 0.0027072758037225042,
+      "excess_post": 0.0029328821206993792,
+      "teacher_acc": 0.9623,
+      "n_seeds": 3,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "asr_pre_mean": 0.9998119947358526,
+      "asr_pre_std": 0.00017230967080110018,
+      "asr_post_mean": 0.009362662154540327,
+      "asr_post_std": 0.003306114131923936,
+      "acc_pre_mean": 0.9877333333333332,
+      "acc_pre_std": 0.0005507570547286033,
+      "acc_post_mean": 0.9479333333333333,
+      "acc_post_std": 0.002281081614790111
+    }
+  ],
+  "screen": [],
+  "evasion": [],
+  "wm_sweep": []
+}

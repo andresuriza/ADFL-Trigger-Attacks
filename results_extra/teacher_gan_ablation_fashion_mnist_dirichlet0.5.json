@@ -1,0 +1,46 @@
+{
+  "dataset": "fashion_mnist",
+  "attack": "pixel",
+  "cells": [
+    {
+      "teacher_part": "iid",
+      "gan_part": "iid",
+      "n_seeds": 3,
+      "asr_post_mean": 0.11803703703703704,
+      "asr_post_std": 0.06627005481066885,
+      "acc_post_mean": 0.6383,
+      "acc_post_std": 0.08769452662509791,
+      "excess_mean": 0.11492592592592593
+    },
+    {
+      "teacher_part": "iid",
+      "gan_part": "noniid",
+      "n_seeds": 3,
+      "asr_post_mean": 0.11751851851851851,
+      "asr_post_std": 0.062173426634084344,
+      "acc_post_mean": 0.6516666666666667,
+      "acc_post_std": 0.07285892761586144,
+      "excess_mean": 0.1144074074074074
+    },
+    {
+      "teacher_part": "noniid",
+      "gan_part": "iid",
+      "n_seeds": 3,
+      "asr_post_mean": 0.20025925925925925,
+      "asr_post_std": 0.08920515495632465,
+      "acc_post_mean": 0.498,
+      "acc_post_std": 0.190562142095433,
+      "excess_mean": 0.15285185185185188
+    },
+    {
+      "teacher_part": "noniid",
+      "gan_part": "noniid",
+      "n_seeds": 3,
+      "asr_post_mean": 0.14759259259259258,
+      "asr_post_std": 0.0351751057687624,
+      "acc_post_mean": 0.49666666666666676,
+      "acc_post_std": 0.20488275509015724,
+      "excess_mean": 0.1001851851851852
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "dataset": "cifar10",
+  "attack": "semantic",
+  "acc_pre": 0.648,
+  "asr_pre": 0.2413793103448276,
+  "sweep": [
+    {
+      "clean_ratio": 0.03,
+      "n_clean": 1500,
+      "teacher_acc": 0.5134,
+      "teacher_T": 0.08620689655172414,
+      "acc_post": 0.1743,
+      "asr_post": 0.3793103448275862
+    },
+    {
+      "clean_ratio": 0.05,
+      "n_clean": 2500,
+      "teacher_acc": 0.5316,
+      "teacher_T": 0.10344827586206896,
+      "acc_post": 0.182,
+      "asr_post": 0.25862068965517243
+    },
+    {
+      "clean_ratio": 0.1,
+      "n_clean": 5000,
+      "teacher_acc": 0.7427,
+      "teacher_T": 0.05172413793103448,
+      "acc_post": 0.1919,
+      "asr_post": 0.0
+    },
+    {
+      "clean_ratio": 0.2,
+      "n_clean": 10000,
+      "teacher_acc": 0.8611,
+      "teacher_T": 0.0,
+      "acc_post": 0.1901,
+      "asr_post": 0.06896551724137931
+    }
+  ]
+}
