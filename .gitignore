@@ -1,16 +1,15 @@
-# --- Python ---
+# Python
 __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
 
-# --- Regenerated at run time (do not commit) ---
-data/            # torchvision dataset cache
-runs/            # per-run work dirs, logs, and executed notebooks
-_empty/          # staging placeholder
+# Se regeneran en tiempo de ejecución (no hacer commit)
+data/            # caché de datasets de torchvision
+runs/            # directorios de trabajo, logs y notebooks ejecutados de cada ejecución
+_empty/          # marcador de posición para el staging
 *.log
-*.tar.gz         # dataset archives (re-downloadable)
+*.tar.gz         # archivos de datasets que se pueden volver a descargar
 
-# --- Model weights (published separately, see README) ---
-# Checkpoints are ~1.6 GB and include one file over GitHub's 100 MB per-file
-# limit. They are released out-of-band; use `git add -f <file>` to override.
+# Pesos de los modelos (se publican aparte, ver README)
+# ~1.6 GB en total, un archivo supera el límite de 100 MB de GitHub; usar `git add -f <archivo>` para forzarlo.
 *.pt

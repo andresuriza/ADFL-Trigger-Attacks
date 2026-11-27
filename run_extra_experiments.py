@@ -1,18 +1,16 @@
-#!/usr/bin/env python3
-"""Parallel launcher for the three extra ADFL experiments.
+"""Parallel launcher for the extra ADFL experiments.
 
-Experiments (all executed from ``adfl-clean.ipynb`` via env vars only):
+Runs (all driven through ``adfl-clean.ipynb`` env vars):
+  exp1_partition_var         ADFL_RUN=5  Fashion-MNIST Non-IID partition/teacher variance
+  exp2_teacher_gan_ablation  ADFL_RUN=6  Fashion-MNIST Non-IID teacher/GAN 2x2 ablation
+  exp3_cifar_multiseed       ADFL_RUN=7  CIFAR-10 IID headline, seeds 42,43,44
+  exp4_mnist_noniid          ADFL_RUN=8  MNIST Non-IID negative control
+  exp5_adaptive              ADFL_RUN=9  adaptive trigger vs ADFL
 
-* exp1_partition_var          ADFL_RUN=5  Fashion-MNIST Non-IID partition/teacher variance
-* exp2_teacher_gan_ablation   ADFL_RUN=6  Fashion-MNIST Non-IID teacher/GAN 2x2 ablation
-* exp3_cifar_multiseed        ADFL_RUN=7  CIFAR-10 IID headline, seeds 42,43,44
-
-Each run gets an isolated work dir ``runs/<label>/work`` into which the base
-checkpoints it needs are staged from ``--stage-from`` (default ``box-insurance``)
-so the notebook's ``load_or_train`` reuses them. Runs execute concurrently on a
-single GPU, each pinned to a disjoint CPU core range (Linux only) with
-OMP/MKL/OPENBLAS threads = 1, because FL training here is single-thread
-launch-bound. Result JSONs are collected into ``results_extra/``.
+Each run gets ``runs/<label>/work``, seeded with the base checkpoints staged from ``--stage-from``
+(``box-insurance`` by default) so ``load_or_train`` reuses them. Runs share one GPU, are pinned to
+disjoint CPU cores (Linux only) with one BLAS thread each, and copy their outputs to
+``results_extra/``.
 
 Usage:
     python run_extra_experiments.py --dry-run
@@ -36,19 +34,19 @@ NOTEBOOK = "adfl-clean.ipynb"
 
 FASHION_NEEDS = [
     "backdoored_fashion_mnist_dirichlet0.5_*_paper_dirichlet*.pt",
-    "purified_fashion_mnist_dirichlet0.5_*_paper_dirichlet*.pt",  # lets seed_rows()/full-FL confirm resume from cache
+    "purified_fashion_mnist_dirichlet0.5_*_paper_dirichlet*.pt",  # permite que seed_rows()/la confirmación con FL completo reanuden desde la caché
     "clean_fashion_mnist_dirichlet0.5_paper_dirichlet.pt",
     "clean_fashion_mnist_paper_iid.pt",
     "generator_fashion_mnist*_paper*.pt",
     "distill_fashion_mnist*_paper*.pt",
     "results_fashion_mnist_dirichlet0.5.json",
     "multiseed_fashion_mnist_dirichlet0.5.json",
-    "clean_sweep_fashion_mnist_dirichlet0.5.json",               # present -> the clean-budget sweep cell self-skips
+    "clean_sweep_fashion_mnist_dirichlet0.5.json",               # presente -> el barrido de presupuesto limpio se omite solo
 ]
 CIFAR_NEEDS = [
     "backdoored_cifar10_resnet18_pixel_paper_iid.pt",
     "backdoored_cifar10_resnet18_semantic_paper_iid.pt",
-    "purified_cifar10_resnet18_*_paper_iid.pt",                  # seed-42 purified -> seed_rows(42) returns cached
+    "purified_cifar10_resnet18_*_paper_iid.pt",                  # purified de semilla 42 -> seed_rows(42) acierta en la caché
     "clean_cifar10_resnet18_paper_iid.pt",
     "generator_cifar10_resnet18_paper_iid.pt",
     "distill_cifar10_resnet18_paper_iid.pt",
@@ -57,18 +55,16 @@ CIFAR_NEEDS = [
     "clean_sweep_cifar10_resnet18.json",
 ]
 
-
 def _verify_exp3(work: Path) -> tuple[bool, str]:
-    """exp3 stages results_cifar10_resnet18.json IN and writes it OUT, so file-presence proves
-    nothing. Confirm the multi-seed merge actually ran: the pixel/semantic rows must carry a
-    3-seed aggregate (n_seeds>=3 with an asr_post_std field)."""
+    """exp3 stages results_cifar10_resnet18.json in and out, so file presence proves nothing.
+    Require the multi-seed merge: pixel/semantic rows need n_seeds>=3 and asr_post_std."""
     import json
     f = work / "results_cifar10_resnet18.json"
     if not f.exists():
         return False, "results_cifar10_resnet18.json missing"
     try:
         data = json.loads(f.read_text())
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         return False, f"unreadable results json: {e}"
     rows = {r.get("attack"): r for r in data.get("attacks", [])}
     bad = [a for a in ("pixel", "semantic")
@@ -84,24 +80,22 @@ def _verify_mnist_noniid(work: Path) -> tuple[bool, str]:
         return False, "results_mnist_dirichlet0.5.json missing"
     try:
         data = json.loads(f.read_text())
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         return False, f"unreadable results json: {e}"
     rows = {r.get("attack"): r for r in data.get("attacks", [])}
     ok = rows.get("pixel", {}).get("n_seeds", 0) >= 3 and "asr_post_std" in rows.get("pixel", {})
     return ok, ("3-seed aggregate present for pixel" if ok else "no 3-seed pixel aggregate")
 
-
 def _verify_adaptive(work: Path) -> tuple[bool, str]:
-    """Adaptive-trigger attacker: the output is written fresh (not staged), so confirm the search +
-    full-FL confirm actually produced at least one mode with a full-FL ASR and an off-manifold
-    coverage number."""
+    """Adaptive attacker writes its output fresh, so require at least one mode with a full-FL
+    asr_post and an off-manifold coverage number."""
     import json
     f = work / "adaptive_trigger_fashion_mnist_dirichlet0.5.json"
     if not f.exists():
         return False, "adaptive_trigger_fashion_mnist_dirichlet0.5.json missing"
     try:
         data = json.loads(f.read_text())
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         return False, f"unreadable results json: {e}"
     res = data.get("results", [])
     good = [r for r in res if "asr_post" in r and r.get("coverage_mean") is not None]
@@ -111,8 +105,7 @@ def _verify_adaptive(work: Path) -> tuple[bool, str]:
     return True, (f"{len(good)} mode(s); best={best.get('mode')} asr_post={best.get('asr_post'):.3f} "
                   f"(static baseline survivor ~0.43)")
 
-
-# Order matters: the CIFAR run is the wall-clock long pole, so it goes first.
+# CIFAR es el cuello de botella en tiempo de reloj, así que empieza primero.
 RUN_MATRIX = [
     dict(label="exp3_cifar_multiseed", run=7, experiment="",
          work_dir="runs/exp3_cifar_multiseed/work", needs=CIFAR_NEEDS,
@@ -125,35 +118,27 @@ RUN_MATRIX = [
     dict(label="exp2_teacher_gan_ablation", run=6, experiment="teacher_gan_ablation",
          work_dir="runs/exp2_teacher_gan_ablation/work", needs=FASHION_NEEDS,
          outputs=["teacher_gan_ablation_fashion_mnist_dirichlet0.5.json"]),
-    # MNIST Non-IID negative control. Nothing to stage (box-insurance has only MNIST IID); trains
-    # fresh. experiment="mnist_noniid_control" is a non-matching sentinel: it trips the evasion-screen
-    # skip-guards (if not EXPERIMENT) without triggering any gated experiment cell, keeping this a
-    # bounded multi-seed backdoor-removal control (pixel is MNIST's only registered attack).
+    # Control negativo MNIST Non-IID: nada que preparar, entrena desde cero. "mnist_noniid_control" es un
+    # centinela que no coincide y dispara las guardas de omisión del cribado de evasión sin ejecutar ninguna celda habilitada.
     dict(label="exp4_mnist_noniid", run=8, experiment="mnist_noniid_control",
          work_dir="runs/exp4_mnist_noniid/work", needs=[],
          outputs=["results_mnist_dirichlet0.5.json", "multiseed_mnist_dirichlet0.5.json"],
          verify=_verify_mnist_noniid),
-    # Adaptive-trigger attacker vs ADFL (Exp 5). Stages the Fashion Non-IID set so the primary
-    # backdoored model + GAN + teacher + distillation set are reused (the search runs on top of
-    # them); the per-mode full-FL confirm still trains a fresh backdoored model for the found
-    # trigger. experiment="adaptive_trigger" runs the gated ES cell (RUN=9) and skips the standard
-    # evasion screen. ADV_* env knobs (gens/lambda/modes) can tune the search budget.
+    # Exp 5: prepara el conjunto Fashion Non-IID para reutilizar modelo + GAN + profesor + destilación; solo
+    # se ejecutan la búsqueda y su confirmación con FL completo. Las variables de entorno ADV_* ajustan el presupuesto de búsqueda.
     dict(label="exp5_adaptive", run=9, experiment="adaptive_trigger",
          work_dir="runs/exp5_adaptive/work", needs=FASHION_NEEDS,
          outputs=["adaptive_trigger_fashion_mnist_dirichlet0.5.json"],
          verify=_verify_adaptive),
 ]
 
-
 def run_dir(spec: dict) -> Path:
     return ROOT / "runs" / spec["label"]
-
 
 def available_cores() -> int:
     if hasattr(os, "sched_getaffinity"):
         return len(os.sched_getaffinity(0))
     return os.cpu_count() or 1
-
 
 def assign_cores(index: int, cores_per_run: int, total: int) -> list[int] | None:
     """Disjoint core range for the index-th run (None if pinning unsupported)."""
@@ -163,7 +148,6 @@ def assign_cores(index: int, cores_per_run: int, total: int) -> list[int] | None
     start = (index * cores_per_run) % max(len(pool), 1)
     chosen = pool[start:start + cores_per_run]
     return chosen or pool
-
 
 def build_env(spec: dict, data_dir: Path, smoke: bool) -> dict[str, str]:
     env = dict(os.environ)
@@ -180,9 +164,8 @@ def build_env(spec: dict, data_dir: Path, smoke: bool) -> dict[str, str]:
     if smoke:
         env["ADFL_FIDELITY"] = "fast"
     else:
-        env.pop("ADFL_FIDELITY", None)  # unset = paper tier
+        env.pop("ADFL_FIDELITY", None)  # sin definir = nivel paper
     return env
-
 
 def warm_datasets(data_dir: Path) -> None:
     """Download all datasets once, sequentially, into the shared cache."""
@@ -198,7 +181,6 @@ def warm_datasets(data_dir: Path) -> None:
         for train in (True, False):
             getattr(tvd, name)(root=str(data_dir), train=train, download=True)
 
-
 def stage(spec: dict, stage_from: Path) -> None:
     work = ROOT / spec["work_dir"]
     work.mkdir(parents=True, exist_ok=True)
@@ -213,14 +195,13 @@ def stage(spec: dict, stage_from: Path) -> None:
             copied += 1
     print(f"[stage] {spec['label']}: copied {copied} file(s) into {work}")
 
-
 def build_command(out_nb: Path) -> list[str]:
+    # papermill si está instalado; si no, nbconvert.
     if importlib.util.find_spec("papermill") is not None:
         return [sys.executable, "-m", "papermill", NOTEBOOK, str(out_nb)]
     return [sys.executable, "-m", "jupyter", "nbconvert", "--to", "notebook",
             "--execute", "--ExecutePreprocessor.timeout=-1",
             "--output", out_nb.name, "--output-dir", str(out_nb.parent), NOTEBOOK]
-
 
 def launch(spec: dict, env: dict, cores: list[int] | None):
     rdir = run_dir(spec)
@@ -229,11 +210,10 @@ def launch(spec: dict, env: dict, cores: list[int] | None):
     log = open(rdir / "log.txt", "w", encoding="utf-8")
     kwargs = {}
     if cores and hasattr(os, "sched_setaffinity"):
-        kwargs["preexec_fn"] = lambda c=set(cores): os.sched_setaffinity(0, c)
+        kwargs["preexec_fn"] = lambda c=set(cores): os.sched_setaffinity(0, c)   # fijar el proceso hijo a esos núcleos
     proc = subprocess.Popen(build_command(out_nb), cwd=str(ROOT), env=env,
                             stdout=log, stderr=subprocess.STDOUT, **kwargs)
     return proc, log
-
 
 def collect(spec: dict, dest: Path) -> list[str]:
     dest.mkdir(parents=True, exist_ok=True)
@@ -244,7 +224,6 @@ def collect(spec: dict, dest: Path) -> list[str]:
             shutil.copy2(m, dest / Path(m).name)
             found.append(Path(m).name)
     return found
-
 
 def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser(description=__doc__,
@@ -265,11 +244,9 @@ def parse_args() -> argparse.Namespace:
                     help="print the plan and env per run; stage and launch nothing")
     return ap.parse_args()
 
-
 def resolve(p: str) -> Path:
     path = Path(p)
     return path if path.is_absolute() else (ROOT / path)
-
 
 def main() -> int:
     args = parse_args()
@@ -357,7 +334,6 @@ def main() -> int:
         if not r["found"] or not r.get("verify_ok", True):
             failed = True
     return 1 if failed else 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

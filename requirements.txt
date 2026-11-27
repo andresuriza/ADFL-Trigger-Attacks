@@ -6,11 +6,10 @@ pandas
 tqdm
 matplotlib
 
-# Optional: parallel launcher for the extra experiments
+# Opcional: lanzador paralelo para los experimentos extra
 papermill
 
-# Required to execute the notebook via the launcher fallback path,
-# or to run it interactively:
+# Ejecución de notebooks (alternativa del lanzador) o uso interactivo
 jupyter
 nbconvert
 ipykernel
